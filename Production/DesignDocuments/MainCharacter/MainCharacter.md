@@ -1,0 +1,1 @@
+# This document will have everything related to the playable character.
