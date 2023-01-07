@@ -1,12 +1,12 @@
 # Design documents and rules
 
 ## Player character
-1. [Main character](MainCharacter\MainCharacter.md)
-2. [Hope character](MainCharacter\HopeCharacter.md)
+1. [Main character](MainCharacter/MainCharacter.md)
+2. [Hope character](MainCharacter/HopeCharacter.md)
 
 ## Obstacles
 
-1. [Blobs (Main Obstacle)](ObstaclesAndInteractables\BlobsMain.md)
+1. [Blobs (Main Obstacle)](ObstaclesAndInteractables/BlobsMain.md)
 
 ## Interactiles
 

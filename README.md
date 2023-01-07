@@ -4,5 +4,5 @@
 
 ## Important links
 1. [Trello board](https://trello.com/b/8vRMOuFt/ray-of-hope)
-2. [Design document](Production\DesignDocuments\README.md)
+2. [Design document](Production/DesignDocuments/README.md)
 3. [Engine assets naming](https://docs.unrealengine.com/4.27/en-US/ProductionPipelines/AssetNaming/), [More naming](https://www.tomlooman.com/unreal-engine-naming-convention-guide/)
