@@ -6,7 +6,7 @@
 
 ## Obstacles
 
-1. [Blobs (Main Obstacle)](ObstaclesAndInteractables/BlobsMain.md)
+1. [Blobs (Main Obstacle)](ObstaclesAndInteractables/BlobsObstacle.md)
 
 ## Interactiles
 
