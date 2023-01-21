@@ -37,6 +37,7 @@ AROH_HopePawn::AROH_HopePawn()
 	if (PointLightComponent)
 	{
 		PointLightComponent->SetupAttachment(SphereComponent);
+		PointLightComponent->SetSourceRadius(0.0f);
 	}
 
 	MovementComponent = CreateOptionalDefaultSubobject<UFloatingPawnMovement>(TEXT("Floating Movement Component"));
@@ -120,7 +121,6 @@ void AROH_HopePawn::UpdateScale()
 	}
 	if (PointLightComponent)
 	{
-		PointLightComponent->SetSourceRadius(HopePointLightRaduis);
 		PointLightComponent->SetAttenuationRadius(HopePointLightRaduis);
 	}
 }
