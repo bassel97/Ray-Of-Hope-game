@@ -9,10 +9,8 @@
 #include "GenericPlatform/GenericPlatformMath.h"
 #include "Engine/EngineTypes.h"
 
-// Sets default values
 AROH_HopePawn::AROH_HopePawn()
 {
-	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
 	SphereComponent = CreateDefaultSubobject<USphereComponent>(TEXT("Hope Collision"));
@@ -56,30 +54,6 @@ void AROH_HopePawn::Tick(float DeltaTime)
 
 	UpdateScale();
 
-	//HopeAliveLerpTimer += DeltaTime;
-
-	//const FVector actorLocation = GetActorLocation();
-
-	/*// moves from 0->1
-	const float timeProgress = (HopeAliveLerpTimer / TimeTillNextJump);
-	// Moves from 0->1->0 instead of 0->1
-	const float remappedLerpValue = 1.0f - FMath::Abs(timeProgress * 2.0f - 1.0f);
-	// this sign means we are in the 1->0 phase (returning)
-	const float sign = (timeProgress > 0.5f) ? -1.0f : 1.0f;
-
-	FVector lerpedPosition =
-		sign * FMath::InterpEaseInOut(
-			HopeAlivePositionPrevOffset,
-			HopeAlivePositionOffset,
-			remappedLerpValue,
-			1.0f);
-
-	FVector moveInput = lerpedPosition * DeltaTime;
-
-	GEngine->AddOnScreenDebugMessage(-1, 10.0f, FColor::Magenta, lerpedPosition.ToString());
-
-	AddMovementInput(lerpedPosition + HopePlayerDelta);*/
-
 	TimePassed += DeltaTime;
 
 	const FVector2D frequency = FVector2D(
@@ -94,8 +68,6 @@ void AROH_HopePawn::Tick(float DeltaTime)
 		0.0f,
 		FMath::Cos(TimePassed * (frequency.Y + RandomFrequencyOffset.Y)) * amplitude
 	);
-
-	GEngine->AddOnScreenDebugMessage(-1, 20.0f, FColor::Magenta, aliveEffectDelta.ToString());
 
 	const FVector playerInput =
 		FVector(HopePlayerInput.X, 0.0f, HopePlayerInput.Y) * HopeMoveSpeed * DeltaTime;
@@ -135,10 +107,7 @@ void AROH_HopePawn::BeginPlay()
 
 	RandomFrequencyOffset = FMath::RandPointInCircle(1.0f);
 
-	//HopeGlobalPosition = GetActorLocation();
 	HopeAlivePositionPrevOffset = FVector(0.0f);
-
-	//UpdateAliveHope();
 }
 
 void AROH_HopePawn::UpdateScale()
@@ -155,16 +124,3 @@ void AROH_HopePawn::UpdateScale()
 		PointLightComponent->SetAttenuationRadius(HopePointLightRaduis);
 	}
 }
-
-/*void AROH_HopePawn::UpdateAliveHope()
-{
-	HopeAlivePositionPrevOffset = FVector();
-	FVector2D randomPoint = FMath::RandPointInCircle(HopeLiveRaduis);
-	HopeAlivePositionOffset = FVector(randomPoint.X, 0.0f, randomPoint.Y);
-
-	HopeAliveLerpTimer = 0.0f;
-
-	TimeTillNextJump = FMath::Lerp(HopeTimeMinMax.X, HopeTimeMinMax.Y, HopeStressValue) + KINDA_SMALL_NUMBER;
-	GetWorldTimerManager().SetTimer(HopeAliveTimerHandle, this,
-		&AROH_HopePawn::UpdateAliveHope, TimeTillNextJump, false);
-}*/
