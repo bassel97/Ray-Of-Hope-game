@@ -88,6 +88,7 @@ void AROH_HopePawn::SetStressValue(float stressValue)
 	RandomFrequencyOffset = FMath::RandPointInCircle(1.0f);
 }
 
+#if WITH_EDITOR
 void AROH_HopePawn::PostEditChangeProperty(FPropertyChangedEvent& e)
 {
 	FName PropertyName = (e.Property != NULL) ? e.Property->GetFName() : NAME_None;
@@ -101,6 +102,7 @@ void AROH_HopePawn::PostEditChangeProperty(FPropertyChangedEvent& e)
 	}
 	Super::PostEditChangeProperty(e);
 }
+#endif
 
 void AROH_HopePawn::BeginPlay()
 {

@@ -25,7 +25,9 @@ public:
 	UFUNCTION(BlueprintCallable, Category = Hope)
 	void SetStressValue(float stressValue);
 
+#if WITH_EDITOR
 	virtual void PostEditChangeProperty(FPropertyChangedEvent& PropertyChangedEvent) override;
+#endif
 
 public:
 
