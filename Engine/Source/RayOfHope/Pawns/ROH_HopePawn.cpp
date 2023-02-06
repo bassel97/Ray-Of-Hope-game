@@ -5,10 +5,10 @@
 #include "Components/SphereComponent.h"
 #include "Components/StaticMeshComponent.h"
 #include "Components/PointLightComponent.h"
+#include "RayOfHope/ActorComponents/ROH_LightEmitterComponent.h"
 #include "GameFramework/FloatingPawnMovement.h"
 #include "GenericPlatform/GenericPlatformMath.h"
 #include "Engine/EngineTypes.h"
-#include "Kismet/KismetSystemLibrary.h"
 
 AROH_HopePawn::AROH_HopePawn()
 {
@@ -41,10 +41,22 @@ AROH_HopePawn::AROH_HopePawn()
 		PointLightComponent->SetSourceRadius(0.0f);
 	}
 
+	HopeLightSphereEffect = CreateOptionalDefaultSubobject<UStaticMeshComponent>(TEXT("Hope Light Sphere Effect"));
+	if (HopeLightSphereEffect)
+	{
+		HopeLightSphereEffect->SetupAttachment(SphereComponent);
+	}
+
 	MovementComponent = CreateOptionalDefaultSubobject<UFloatingPawnMovement>(TEXT("Floating Movement Component"));
 	if (MovementComponent)
 	{
 		MovementComponent->UpdatedComponent = SphereComponent;
+	}
+
+	LightEmitterComponent = CreateOptionalDefaultSubobject<UROH_LightEmitterComponent>(TEXT("Light Emitter Component"));
+	if (LightEmitterComponent)
+	{
+		LightEmitterComponent->SetRaduis(HopePointLightRaduis);
 	}
 
 	UpdateScale();
@@ -75,8 +87,6 @@ void AROH_HopePawn::Tick(float DeltaTime)
 		FVector(HopePlayerInput.X, 0.0f, HopePlayerInput.Y) * HopeMoveSpeed;
 
 	AddMovementInput(aliveEffectDelta + playerInput);
-
-	UpdateHopeRays();
 }
 
 void AROH_HopePawn::SetPlayerInput(FVector2D playerInput)
@@ -95,11 +105,8 @@ void AROH_HopePawn::SetStressValue(float stressValue)
 void AROH_HopePawn::PostEditChangeProperty(FPropertyChangedEvent& e)
 {
 	FName PropertyName = (e.Property != NULL) ? e.Property->GetFName() : NAME_None;
-	if (PropertyName == GET_MEMBER_NAME_CHECKED(AROH_HopePawn, HopeScale))
-	{
-		UpdateScale();
-	}
-	if (PropertyName == GET_MEMBER_NAME_CHECKED(AROH_HopePawn, HopePointLightRaduis))
+	if (PropertyName == GET_MEMBER_NAME_CHECKED(AROH_HopePawn, HopeScale)
+		|| PropertyName == GET_MEMBER_NAME_CHECKED(AROH_HopePawn, HopePointLightRaduis))
 	{
 		UpdateScale();
 	}
@@ -124,47 +131,17 @@ void AROH_HopePawn::UpdateScale()
 	{
 		StaticMeshComponent->SetWorldScale3D(FVector(HopeScale));
 	}
+	if (HopeLightSphereEffect)
+	{
+		// The Raduis of sphere mesh is 160.0f
+		HopeLightSphereEffect->SetWorldScale3D(FVector(HopePointLightRaduis / 160.0f));
+	}
 	if (PointLightComponent)
 	{
 		PointLightComponent->SetAttenuationRadius(HopePointLightRaduis);
 	}
-}
-
-void AROH_HopePawn::UpdateHopeRays()
-{
-	const float angleBetweenRays = 360.0f / RaysCount;
-	const float angleInRads = FMath::DegreesToRadians(angleBetweenRays);
-
-	const FVector startPosition = GetActorLocation();
-
-	for (int32 i = 0; i < RaysCount; i++)
+	if (LightEmitterComponent)
 	{
-		const float angle = i * angleInRads;
-		const FVector endPosition = startPosition +
-			FVector(FMath::Cos(angle), 0.0f, FMath::Sin(angle)) * HopePointLightRaduis;
-
-		//ObjectTypesArray.Add(UEngineTypes::ConvertToObjectType(ECollisionChannel::ECC_GameTraceChannel1));
-		//ObjectTypesArray.Add(UEngineTypes::ConvertToObjectType(ECollisionChannel::ECC_Pawn));
-
-		FHitResult outHit;
-
-		const bool hit = UKismetSystemLibrary::SphereTraceSingleForObjects(
-			GetWorld(),
-			startPosition,
-			endPosition,
-			1.0f,
-			ObjectTypesArray,
-			false,
-			{ this },
-			EDrawDebugTrace::ForOneFrame,
-			outHit,
-			true
-		);
-
-		if (hit)
-		{
-			//GEngine->AddOnScreenDebugMessage(-1, 10.0f, FColor::Magenta, outHit.GetActor()->GetName());
-		}
-		
+		LightEmitterComponent->SetRaduis(HopePointLightRaduis);
 	}
 }

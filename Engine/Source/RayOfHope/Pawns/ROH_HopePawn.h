@@ -38,9 +38,6 @@ protected:
 	/** Uses HopeScale to update HopeScale*/
 	void UpdateScale();
 
-	/** Updates objects around hope*/
-	void UpdateHopeRays();
-
 protected:
 
 	// The values passed by the player input
@@ -61,11 +58,18 @@ private:
 	UPROPERTY(Category = Hope, VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<class UStaticMeshComponent> StaticMeshComponent;
 
+
+	UPROPERTY(Category = Hope, VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<class UStaticMeshComponent> HopeLightSphereEffect;
+
 	UPROPERTY(Category = Hope, VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<class UPointLightComponent> PointLightComponent;
 
 	UPROPERTY(Category = Character, VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<class UFloatingPawnMovement> MovementComponent;
+
+	UPROPERTY(Category = Character, VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<class UROH_LightEmitterComponent> LightEmitterComponent;
 
 	/**
 	* 0 -> 1 float
@@ -94,14 +98,6 @@ private:
 	UPROPERTY(Category = Hope, EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
 	float HopeMoveSpeed = 60.0f;
 
-
-	/**Hope move speed from input.*/
-	UPROPERTY(Category = Hope, EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
-	int32 RaysCount = 120;
-
-	/**Hope Rays query.*/
-	UPROPERTY(Category = Hope, EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
-	TArray<TEnumAsByte<EObjectTypeQuery>> ObjectTypesArray = TArray<TEnumAsByte<EObjectTypeQuery>>();
 
 
 	/** Time passed since the start*/
