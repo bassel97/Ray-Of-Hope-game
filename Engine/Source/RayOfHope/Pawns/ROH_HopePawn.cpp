@@ -8,6 +8,7 @@
 #include "GameFramework/FloatingPawnMovement.h"
 #include "GenericPlatform/GenericPlatformMath.h"
 #include "Engine/EngineTypes.h"
+#include "Kismet/KismetSystemLibrary.h"
 
 AROH_HopePawn::AROH_HopePawn()
 {
@@ -71,9 +72,11 @@ void AROH_HopePawn::Tick(float DeltaTime)
 	);
 
 	const FVector playerInput =
-		FVector(HopePlayerInput.X, 0.0f, HopePlayerInput.Y) * HopeMoveSpeed * DeltaTime;
+		FVector(HopePlayerInput.X, 0.0f, HopePlayerInput.Y) * HopeMoveSpeed;
 
 	AddMovementInput(aliveEffectDelta + playerInput);
+
+	UpdateHopeRays();
 }
 
 void AROH_HopePawn::SetPlayerInput(FVector2D playerInput)
@@ -124,5 +127,44 @@ void AROH_HopePawn::UpdateScale()
 	if (PointLightComponent)
 	{
 		PointLightComponent->SetAttenuationRadius(HopePointLightRaduis);
+	}
+}
+
+void AROH_HopePawn::UpdateHopeRays()
+{
+	const float angleBetweenRays = 360.0f / RaysCount;
+	const float angleInRads = FMath::DegreesToRadians(angleBetweenRays);
+
+	const FVector startPosition = GetActorLocation();
+
+	for (int32 i = 0; i < RaysCount; i++)
+	{
+		const float angle = i * angleInRads;
+		const FVector endPosition = startPosition +
+			FVector(FMath::Cos(angle), 0.0f, FMath::Sin(angle)) * HopePointLightRaduis;
+
+		//ObjectTypesArray.Add(UEngineTypes::ConvertToObjectType(ECollisionChannel::ECC_GameTraceChannel1));
+		//ObjectTypesArray.Add(UEngineTypes::ConvertToObjectType(ECollisionChannel::ECC_Pawn));
+
+		FHitResult outHit;
+
+		const bool hit = UKismetSystemLibrary::SphereTraceSingleForObjects(
+			GetWorld(),
+			startPosition,
+			endPosition,
+			1.0f,
+			ObjectTypesArray,
+			false,
+			{ this },
+			EDrawDebugTrace::ForOneFrame,
+			outHit,
+			true
+		);
+
+		if (hit)
+		{
+			//GEngine->AddOnScreenDebugMessage(-1, 10.0f, FColor::Magenta, outHit.GetActor()->GetName());
+		}
+		
 	}
 }

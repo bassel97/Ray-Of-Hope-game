@@ -35,8 +35,11 @@ public:
 protected:
 	virtual void BeginPlay() override;
 
-	/** Uses HopeScale to updat HopeScale*/
+	/** Uses HopeScale to update HopeScale*/
 	void UpdateScale();
+
+	/** Updates objects around hope*/
+	void UpdateHopeRays();
 
 protected:
 
@@ -90,6 +93,16 @@ private:
 	/**Hope move speed from input.*/
 	UPROPERTY(Category = Hope, EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
 	float HopeMoveSpeed = 60.0f;
+
+
+	/**Hope move speed from input.*/
+	UPROPERTY(Category = Hope, EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
+	int32 RaysCount = 120;
+
+	/**Hope Rays query.*/
+	UPROPERTY(Category = Hope, EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
+	TArray<TEnumAsByte<EObjectTypeQuery>> ObjectTypesArray = TArray<TEnumAsByte<EObjectTypeQuery>>();
+
 
 	/** Time passed since the start*/
 	float TimePassed = 0.0f;
