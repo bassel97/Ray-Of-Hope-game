@@ -17,6 +17,10 @@ public:
 
 	virtual void Tick(float DeltaTime) override;
 
+	void SetBlobRaduis(float raduis);
+	void SetLightReactionSpeed(float lightReactionSpeed);
+	void SetMinMaxLightReactThresholds(FVector2D minMaxLightReactThresholds);
+
 	// Functions overriding for light reaction Interface
 	virtual void ResetInteractionWithLight() override;
 	virtual void ReactToLight(float lightDistance) override;

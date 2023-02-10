@@ -53,6 +53,27 @@ void AROH_BlobActor::Tick(float DeltaTime)
 	ResetInteractionWithLight();
 }
 
+void AROH_BlobActor::SetBlobRaduis(float raduis)
+{
+	BlobRaduis = raduis;
+
+	SphereComponent->SetSphereRadius(BlobRaduis);
+	if (StaticMeshComponent)
+	{
+		StaticMeshComponent->SetWorldScale3D(FVector(BlobRaduis / 160.0f));
+		BoxDynamicCollider->SetBoxExtent(FVector(BlobRaduis));
+	}
+}
+
+void AROH_BlobActor::SetLightReactionSpeed(float lightReactionSpeed)
+{
+	LightReactionSpeed = lightReactionSpeed;
+}
+
+void AROH_BlobActor::SetMinMaxLightReactThresholds(FVector2D minMaxLightReactThresholds)
+{
+	MinMaxLightReactThresholds = MinMaxLightReactThresholds;
+}
 
 void AROH_BlobActor::ResetInteractionWithLight()
 {
@@ -72,7 +93,6 @@ void AROH_BlobActor::ReactToLight(float lightDistance)
 
 	TargetBlobScale = FVector(1.0f - lightRecievedValue);
 
-	// TODO: Replace with tolerance value
 	if (lightRecievedValue > BoxDynamicLightThreshold)
 	{
 		BoxDynamicCollider->SetCollisionEnabled(ECollisionEnabled::NoCollision);
@@ -115,12 +135,7 @@ void AROH_BlobActor::PostEditChangeProperty(FPropertyChangedEvent& e)
 	FName PropertyName = (e.Property != NULL) ? e.MemberProperty->GetFName() : NAME_None;
 	if (PropertyName == GET_MEMBER_NAME_CHECKED(AROH_BlobActor, BlobRaduis))
 	{
-		SphereComponent->SetSphereRadius(BlobRaduis);
-		if (StaticMeshComponent)
-		{
-			StaticMeshComponent->SetWorldScale3D(FVector(BlobRaduis / 160.0f));
-			BoxDynamicCollider->SetBoxExtent(FVector(BlobRaduis));
-		}
+		SetBlobRaduis(BlobRaduis);
 	}
 	Super::PostEditChangeProperty(e);
 }
