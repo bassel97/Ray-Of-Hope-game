@@ -55,7 +55,7 @@ protected:
 	TSubclassOf<class AROH_BlobActor> BlobActor;
 
 	UPROPERTY(Category = BlobRegion, VisibleAnywhere, meta = (AllowPrivateAccess = "true"))
-	TArray<class AROH_BlobActor*> BlobsArray;
+	TArray<TObjectPtr<class AROH_BlobActor>> BlobsArray;
 
 	UPROPERTY(Category = Blob, VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<class UBoxComponent> BoxCollider;
