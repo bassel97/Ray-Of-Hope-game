@@ -2,6 +2,7 @@
 # Ray Of Hope
 ### A Game about the recovery journey of a young kid.
 3D side scroller game made in Unreal.
+![In game screenshot](Assets/Images/RoHBanner.png)
 
 ## Important links
 1. [Trello board](https://trello.com/b/8vRMOuFt/ray-of-hope)
