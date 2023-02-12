@@ -23,10 +23,9 @@ public:
 protected:
 	virtual void BeginPlay() override;
 
+
 private:
 	UPROPERTY(Category = KeyTargetConnector, VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<class USplineComponent> SplineComponent;
 
-	UPROPERTY(Category = KeyTargetConnector, VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
-	TArray<TObjectPtr<class USplineMeshComponent>> SplineMeshesArray;
 };

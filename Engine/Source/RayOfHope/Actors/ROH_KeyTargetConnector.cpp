@@ -28,8 +28,6 @@ void AROH_KeyTargetConnector::OnConstruction(const FTransform& Transform)
 	{
 		USplineMeshComponent* SplineMesh = NewObject<USplineMeshComponent>(USplineMeshComponent::StaticClass());
 
-		SplineMeshesArray.Add(SplineMesh);
-
 		if (SplineMesh != nullptr)
 		{
 			SplineMesh->SetupAttachment(SplineComponent);
