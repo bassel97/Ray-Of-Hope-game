@@ -41,7 +41,7 @@ void AROH_BoyCharacter::Tick(float DeltaTime)
 	UpdateSensor(-1.0f);
 
 	// Boy Jumping up
-	if (!GetMovementComponent()->IsMovingOnGround())
+	/*if (!GetMovementComponent()->IsMovingOnGround())
 	{
 		if (bIsJumpingRight)
 		{
@@ -51,8 +51,8 @@ void AROH_BoyCharacter::Tick(float DeltaTime)
 		{
 			AddMovementInput(FVector(-1.0f, 0.0f, 0.0f));
 		}
-	}
-	else
+	}*/
+	//else
 	{
 		if (bIsJumpingRight)
 		{
@@ -65,26 +65,26 @@ void AROH_BoyCharacter::Tick(float DeltaTime)
 	}
 
 	// Boy Jumping Down
-	if (bIsJumpingDownRight)
+	//if (bIsJumpingDownRight)
 	{
 		if (!bCanMoveRight)
 		{
-			AddMovementInput(FVector(1.0f, 0.0f, 0.0f));
+			//AddMovementInput(FVector(1.0f, 0.0f, 0.0f));
 		}
 		else
 		{
-			bIsJumpingDownRight = false;
+			//bIsJumpingDownRight = false;
 		}
 	}
-	if (bIsJumpingDownLeft)
+	//if (bIsJumpingDownLeft)
 	{
 		if (!bCanMoveLeft)
 		{
-			AddMovementInput(FVector(-1.0f, 0.0f, 0.0f));
+			//AddMovementInput(FVector(-1.0f, 0.0f, 0.0f));
 		}
 		else
 		{
-			bIsJumpingDownLeft = false;
+			//bIsJumpingDownLeft = false;
 		}
 	}
 }
@@ -121,13 +121,13 @@ void AROH_BoyCharacter::BoyTryClimb()
 		return;
 	}
 
-	if (bCanJumpRight && BoyHorizontalInput > 0.0f)
+	//if (bCanJumpRight && BoyHorizontalInput > 0.0f)
 	{
 		bIsJumpingRight = true;
 		Jump();
 	}
 
-	if (bCanJumpLeft && BoyHorizontalInput < 0.0f)
+	//if (bCanJumpLeft && BoyHorizontalInput < 0.0f)
 	{
 		bIsJumpingLeft = true;
 		Jump();
@@ -140,19 +140,19 @@ void AROH_BoyCharacter::BoyTryJumpDown()
 		return;
 	}
 
-	if (!bCanMoveRight)
+	/*if (!bCanMoveRight)
 	{
 		bIsJumpingDownRight = true;
 	}
 	if (!bCanMoveLeft)
 	{
 		bIsJumpingDownLeft = true;
-	}
+	}*/
 }
 
 void AROH_BoyCharacter::BoyStartPush()
 {
-	if (bIsJumpingRight || bIsJumpingLeft || bIsJumpingDownRight || bIsJumpingDownLeft)
+	if (bIsJumpingRight || bIsJumpingLeft /* || bIsJumpingDownRight || bIsJumpingDownLeft*/)
 	{
 		return;
 	}
@@ -177,7 +177,7 @@ void AROH_BoyCharacter::BoyStartPush()
 }
 void AROH_BoyCharacter::BoyEndPush()
 {
-	if (bIsJumpingRight || bIsJumpingLeft || bIsJumpingDownRight || bIsJumpingDownLeft)
+	if (bIsJumpingRight || bIsJumpingLeft /*|| bIsJumpingDownRight || bIsJumpingDownLeft*/)
 	{
 		return;
 	}
@@ -211,18 +211,24 @@ void AROH_BoyCharacter::HopeMoveVertical(float axisValue)
 }
 void AROH_BoyCharacter::BoyMoveHorizontal(float axisValue)
 {
-	if (bIsJumpingRight || bIsJumpingLeft || bIsJumpingDownRight || bIsJumpingDownLeft)
+	if (bIsJumpingRight || bIsJumpingLeft /*|| bIsJumpingDownRight || bIsJumpingDownLeft*/)
 	{
 		return;
 	}
 
 	BoyHorizontalInput = axisValue;
 
-	if ((axisValue > 0 && bCanMoveRight) || (axisValue < 0 && bCanMoveLeft))
+	//if ((axisValue > 0 && bCanMoveRight) || (axisValue < 0 && bCanMoveLeft))
 	{
 		AddMovementInput(FVector(axisValue, 0.0f, 0.0f));
 	}
 }
+
+bool AROH_BoyCharacter::IsBoyJumpingDown() const
+{
+	return !GetMovementComponent()->IsMovingOnGround();
+}
+
 
 #if WITH_EDITOR
 void AROH_BoyCharacter::PostEditChangeProperty(FPropertyChangedEvent& e)

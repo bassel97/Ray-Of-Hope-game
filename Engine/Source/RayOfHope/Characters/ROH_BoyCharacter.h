@@ -35,7 +35,7 @@ public:
 	bool IsBoyJumping() const {	return bIsJumpingRight || bIsJumpingLeft; }
 
 	UFUNCTION(BlueprintCallable, Category = Boy)
-	bool IsBoyJumpingDown() const { return bIsJumpingDownRight || bIsJumpingDownLeft; }
+	bool IsBoyJumpingDown() const; //{ return bIsJumpingDownRight || bIsJumpingDownLeft; }
 
 	UFUNCTION(BlueprintCallable, Category = Boy)
 	bool IsBoyPushingPulling() const { return bIsPushingPulling; }
@@ -63,8 +63,8 @@ protected:
 	bool bIsJumpingRight = false;
 	bool bIsJumpingLeft = false;
 
-	bool bIsJumpingDownRight = false;
-	bool bIsJumpingDownLeft = false;
+	//bool bIsJumpingDownRight = false;
+	//bool bIsJumpingDownLeft = false;
 
 	bool bIsPushingPulling = false;
 	FVector CapturedPushObjectOffset = FVector();
