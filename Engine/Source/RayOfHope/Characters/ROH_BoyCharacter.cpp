@@ -87,14 +87,6 @@ void AROH_BoyCharacter::Tick(float DeltaTime)
 			bIsJumpingDownLeft = false;
 		}
 	}
-
-	if (bIsPushingPulling)
-	{
-		if (ActorToPush)
-		{
-			ActorToPush->SetActorLocation(GetActorLocation() + CapturedPushObjectOffset);
-		}
-	}
 }
 
 void AROH_BoyCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
@@ -165,22 +157,21 @@ void AROH_BoyCharacter::BoyStartPush()
 		return;
 	}
 
-	if (bCanPushBoxRight || bCanPushBoxLeft)
+	if ((ActorToPush != nullptr) && (bCanPushBoxRight || bCanPushBoxLeft))
 	{
 		Crouch();
 		bIsPushingPulling = true;
-		CapturedPushObjectOffset = ActorToPush->GetActorLocation() - GetActorLocation();
-		if (ActorToPush)
+		
+		if (UPrimitiveComponent* rootComp = Cast<UPrimitiveComponent>(ActorToPush->GetRootComponent()))
 		{
-			if (UPrimitiveComponent* rootComp = Cast<UPrimitiveComponent>(ActorToPush->GetRootComponent()))
-			{
-				rootComp->SetSimulatePhysics(false);
-				rootComp->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-			}
+			rootComp->SetSimulatePhysics(false);
+			rootComp->SetCollisionResponseToChannel(ECollisionChannel::ECC_Pawn, ECollisionResponse::ECR_Ignore);
+			ActorToPush->AttachToActor(this, FAttachmentTransformRules::KeepWorldTransform);
 		}
-		if (UCharacterMovementComponent* const MovementComponent = GetCharacterMovement())
+		
+		if (UCharacterMovementComponent* const movementComponent = GetCharacterMovement())
 		{
-			MovementComponent->bOrientRotationToMovement = false;
+			movementComponent->bOrientRotationToMovement = false;
 		}
 	}		
 }
@@ -191,22 +182,21 @@ void AROH_BoyCharacter::BoyEndPush()
 		return;
 	}
 
-	if (bIsPushingPulling)
+	if ((ActorToPush != nullptr) && bIsPushingPulling)
 	{
 		UnCrouch();
 		bIsPushingPulling = false;
-		if (ActorToPush)
+
+		if (UPrimitiveComponent* rootComp = Cast<UPrimitiveComponent>(ActorToPush->GetRootComponent()))
 		{
-			if (UPrimitiveComponent* rootComp = Cast<UPrimitiveComponent>(ActorToPush->GetRootComponent()))
-			{
-				rootComp->SetSimulatePhysics(true);
-				rootComp->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
-			}
+			rootComp->SetSimulatePhysics(true);
+			rootComp->SetCollisionResponseToChannel(ECollisionChannel::ECC_Pawn, ECollisionResponse::ECR_Block);
+			ActorToPush->DetachFromActor(FDetachmentTransformRules::KeepWorldTransform);
 		}
-		CapturedPushObjectOffset = FVector();
-		if (UCharacterMovementComponent* const MovementComponent = GetCharacterMovement())
+		
+		if (UCharacterMovementComponent* const movementComponent = GetCharacterMovement())
 		{
-			MovementComponent->bOrientRotationToMovement = true;
+			movementComponent->bOrientRotationToMovement = true;
 		}
 	}
 }
