@@ -35,7 +35,10 @@ public:
 	bool IsBoyJumping() const {	return bIsJumpingRight || bIsJumpingLeft; }
 
 	UFUNCTION(BlueprintCallable, Category = Boy)
-	bool IsBoyJumpingDown() const; //{ return bIsJumpingDownRight || bIsJumpingDownLeft; }
+	bool IsBoyJumpingDown() const;
+
+	UFUNCTION(BlueprintCallable, Category = Boy)
+	bool CanReactToInputMove() const;
 
 	UFUNCTION(BlueprintCallable, Category = Boy)
 	bool IsBoyPushingPulling() const { return bIsPushingPulling; }
@@ -76,6 +79,7 @@ protected:
 	bool bCanPushBoxLeft = false;
 	FVector JumpTargetRight = FVector();
 	AActor* ActorToPush = nullptr;
+	class AROH_MovablePawn* CurrentMovablePawn = nullptr;
 
 	bool bCanMoveLeft = false;
 	//bool bCanPushBoxLeft = false;
@@ -111,7 +115,30 @@ protected:
 
 	UPROPERTY(Category = BoyNavigation, EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
 	TArray<TEnumAsByte<EObjectTypeQuery>> ObjectTypesArray = TArray<TEnumAsByte<EObjectTypeQuery>>();
+	
+	/**** Boy Hope ***********************************************************/
+	UPROPERTY(Category = BoyHope, EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
+	bool bBoyCreateHope = true;
+	UPROPERTY(Category = BoyHope, EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
+	FVector HopeCreationOffset = FVector(-200.0f, 0, 200.0f);
 
+	/**** Moving Sensors***********************************************************/
+	UPROPERTY(Category = BoyNavigation, EditAnywhere, meta = (AllowPrivateAccess = "true"))
+	float MovingStoppingDistance = 30.0f;
+	UPROPERTY(Category = BoyNavigation, EditAnywhere, meta = (AllowPrivateAccess = "true"))
+	FVector MovingStoppingDistanceOffset = FVector();
+
+	/*** Animation montage approach *********************************/
+	FTimerHandle AnimMontageEndTimerHandle;
+
+	UPROPERTY(Category = BoyNavigation, EditAnywhere, meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<UAnimMontage> ClimbBoxAnimMontage = nullptr;
+
+	UPROPERTY(Category = BoyNavigation, EditAnywhere, meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<UAnimMontage> JumpDownAnimMontage = nullptr;
+
+private:
+	void OnAnimationMontageEnd();
 
 private:
 	UPROPERTY(Category = Boy, VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))

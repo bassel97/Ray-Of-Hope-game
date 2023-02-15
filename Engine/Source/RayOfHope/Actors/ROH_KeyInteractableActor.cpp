@@ -37,11 +37,11 @@ void AROH_KeyInteractableActor::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 
 	const bool shouldOpenTarget = bShouldOpenByLight || bShouldOpenByCollision;
-	if (bShouldOpenByLightPrevious != bShouldOpenByLight)
+	if (bShouldOpenByLightPrevious != shouldOpenTarget)
 	{
 		InteractWithTargets(shouldOpenTarget);
 	}
-	bShouldOpenByLightPrevious = bShouldOpenByLight;
+	bShouldOpenByLightPrevious = shouldOpenTarget;
 }
 
 void AROH_KeyInteractableActor::ResetInteractionWithLight()
@@ -127,6 +127,11 @@ void AROH_KeyInteractableActor::BeginPlay()
 
 void AROH_KeyInteractableActor::InteractWithTargets(bool isOpening)
 {
+	if (!isOpening && bIsOneTimePress)
+	{
+		return;
+	}
+
 	if (bCanInteractWithDynamicObjects)
 	{
 		for (FROH_KeyTargetStruct keyTarget : KeyTargets)

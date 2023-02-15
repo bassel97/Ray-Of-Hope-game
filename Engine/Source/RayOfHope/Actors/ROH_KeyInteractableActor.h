@@ -47,6 +47,11 @@ protected:
 	virtual void BeginPlay() override;
 	virtual void InteractWithTargets(bool isOpening);
 
+protected:
+
+	UPROPERTY(Category = KeyInteractable, EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
+	bool bIsOneTimePress = false;
+
 	bool bShouldOpenByLight = false;
 	bool bShouldOpenByLightPrevious = false;
 	bool bShouldOpenByCollision = false;
