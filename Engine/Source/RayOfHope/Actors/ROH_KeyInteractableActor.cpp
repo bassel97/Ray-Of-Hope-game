@@ -37,6 +37,7 @@ void AROH_KeyInteractableActor::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 
 	const bool shouldOpenTarget = bShouldOpenByLight || bShouldOpenByCollision;
+	//GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Yellow, shouldOpenTarget?"shouldOpenTarget":"should not OpenTarget");
 	if (bShouldOpenByLightPrevious != shouldOpenTarget)
 	{
 		InteractWithTargets(shouldOpenTarget);
@@ -53,7 +54,12 @@ void AROH_KeyInteractableActor::ResetInteractionWithLight()
 void AROH_KeyInteractableActor::ReactToLight(float lightDistance)
 {
 	IROH_LightReactableInterface::ReactToLight(lightDistance);
-	
+
+	if (bCanInteractWithLight)
+	{
+		//GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Yellow, FString::SanitizeFloat(lightDistance));
+	}
+
 	bShouldOpenByLight = bCanInteractWithLight && lightDistance > LightInteractionThreshold;
 }
 
@@ -66,7 +72,16 @@ void AROH_KeyInteractableActor::OnKeyOverlapBegin(
 	bool bFromSweep,
 	const FHitResult& SweepResult)
 {
-	bShouldOpenByCollision = true;
+	if(!bCanInteractWithDynamicObjects)
+	{
+		return;
+	}
+
+	NumberOfObjectsInCollider++;
+	if (NumberOfObjectsInCollider > 0)
+	{
+		bShouldOpenByCollision = true;
+	}
 }
 
 void AROH_KeyInteractableActor::OnKeyOverlapEnd(
@@ -75,7 +90,16 @@ void AROH_KeyInteractableActor::OnKeyOverlapEnd(
 	UPrimitiveComponent* OtherComp,
 	int32 OtherBodyIndex)
 {
-	bShouldOpenByCollision = false;
+	if (!bCanInteractWithDynamicObjects)
+	{
+		return;
+	}
+
+	NumberOfObjectsInCollider--;
+	if (NumberOfObjectsInCollider <= 0)
+	{
+		bShouldOpenByCollision = false;
+	}
 }
 
 void AROH_KeyInteractableActor::SetUpKeyTargets()
@@ -84,25 +108,23 @@ void AROH_KeyInteractableActor::SetUpKeyTargets()
 	{
 		if (AROH_KeyTargetParent* target = keyTarget.Target.Get())
 		{
-			if (!keyTarget.Connector.IsNull())
+			if (keyTarget.Connector.IsNull())
 			{
-				keyTarget.Connector.Get()->Destroy();
+				//keyTarget.Connector.Get()->Destroy();
+				keyTarget.Connector = GetWorld()->SpawnActor<AROH_KeyTargetConnector>(
+					KeyTargetConnector,
+					GetActorLocation(), GetActorRotation());
 			}
+			//GEngine->AddOnScreenDebugMessage(-1, 10.0f, FColor::Magenta, KeyTargetLineOrigin->GetComponentLocation().ToString());
+			//GEngine->AddOnScreenDebugMessage(-1, 10.0f, FColor::Magenta, keyTarget.Target->GetKeyTargetLineOriginLocation().ToString());
 
-			AROH_KeyTargetConnector* connector = GetWorld()->SpawnActor<AROH_KeyTargetConnector>(
-				AROH_KeyTargetConnector::StaticClass(),
-				GetActorLocation(), GetActorRotation());
-
-			GEngine->AddOnScreenDebugMessage(-1, 10.0f, FColor::Magenta, KeyTargetLineOrigin->GetComponentLocation().ToString());
-			GEngine->AddOnScreenDebugMessage(-1, 10.0f, FColor::Magenta, keyTarget.Target->GetKeyTargetLineOriginLocation().ToString());
-
-			connector->SetStartEndPoints(
+			keyTarget.Connector->SetStartEndPoints(
 				KeyTargetLineOrigin->GetComponentLocation(),
 				keyTarget.Target->GetKeyTargetLineOriginLocation()
 			);
 
-			connector->AttachToActor(this, FAttachmentTransformRules::KeepWorldTransform);
-			keyTarget.Connector = connector;
+			keyTarget.Connector->AttachToActor(this, FAttachmentTransformRules::KeepWorldTransform);
+			//keyTarget.Connector = connector;
 		}
 	}
 }
@@ -132,7 +154,7 @@ void AROH_KeyInteractableActor::InteractWithTargets(bool isOpening)
 		return;
 	}
 
-	if (bCanInteractWithDynamicObjects)
+	if (bCanInteractWithDynamicObjects || bCanInteractWithLight)
 	{
 		for (FROH_KeyTargetStruct keyTarget : KeyTargets)
 		{
@@ -141,10 +163,18 @@ void AROH_KeyInteractableActor::InteractWithTargets(bool isOpening)
 				if (isOpening)
 				{
 					target->OpenTarget();
+					if (keyTarget.Connector.Get())
+					{
+						keyTarget.Connector.Get()->OnOpenTarget();
+					}
 				}
 				else
 				{
 					target->CloseTarget();
+					if (keyTarget.Connector.Get())
+					{
+						keyTarget.Connector.Get()->OnCloseTarget();
+					}
 				}
 			}
 		}

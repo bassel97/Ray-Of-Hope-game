@@ -73,6 +73,9 @@ private:
 	UPROPERTY(Category = Key, VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<class UStaticMeshComponent> KeyStaticMesh;
 
+	UPROPERTY(Category = Key, EditAnywhere, meta = (AllowPrivateAccess = "true"))
+	TSubclassOf<class AROH_KeyTargetConnector> KeyTargetConnector;
+
 	UPROPERTY(Category = Key, VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<class UBoxComponent> KeyBoxCollider;
 
@@ -80,4 +83,6 @@ private:
 	UPROPERTY(Category = Key, VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<class USceneComponent> KeyTargetLineOrigin;
 
+	UPROPERTY()
+	int32 NumberOfObjectsInCollider = 0;
 };

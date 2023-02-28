@@ -25,6 +25,12 @@ public:
 	virtual void ResetInteractionWithLight() override;
 	virtual void ReactToLight(float lightDistance) override;
 
+	UFUNCTION(BlueprintImplementableEvent, Category = Blob)
+	void OnPlayerEnterblob(class AROH_BoyCharacter* boyCharacter);
+
+	UFUNCTION(BlueprintImplementableEvent, Category = Blob)
+	void OnPlayerExitblob(class AROH_BoyCharacter* boyCharacter);
+
 	UFUNCTION()
 	void OnOverlapBegin(class UPrimitiveComponent* OverlappedComp,
 		class AActor* OtherActor,
@@ -49,6 +55,9 @@ protected:
 
 	FVector TargetBlobScale = FVector(1.0f);
 
+	UPROPERTY(Category = Blob, VisibleAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
+	float ReactionToLightValue = 0.0f;
+
 private:
 	UPROPERTY(Category = Blob, EditAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	float BlobRaduis = 12.0f;
@@ -69,7 +78,7 @@ private:
 
 	UPROPERTY(Category = Blob, VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<class UBoxComponent> BoxDynamicCollider;
-	ECollisionEnabled::Type BoxColliderType = ECollisionEnabled::NoCollision;
+	//ECollisionEnabled::Type BoxColliderType = ECollisionEnabled::NoCollision;
 
 	UPROPERTY(Category = Blob, VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<class UStaticMeshComponent> StaticMeshComponent;

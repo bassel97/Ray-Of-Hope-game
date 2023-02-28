@@ -19,6 +19,11 @@ public:
 
 	void SetStartEndPoints(FVector keyLocation, FVector targetLocation);
 
+	UFUNCTION(BlueprintImplementableEvent, Category = DoorTarget)
+	void OnOpenTarget();
+
+	UFUNCTION(BlueprintImplementableEvent, Category = DoorTarget)
+	void OnCloseTarget();
 
 protected:
 	virtual void BeginPlay() override;
@@ -28,4 +33,11 @@ private:
 	UPROPERTY(Category = KeyTargetConnector, VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<class USplineComponent> SplineComponent;
 
+	UPROPERTY(Category = KeyTargetConnector, EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<class UStaticMesh> SplineMesh;
+
+	UPROPERTY()
+	TArray<class USplineMeshComponent*> SplineMeshComponents;
+	UPROPERTY(Category = KeyTargetConnector, EditAnywhere, meta = (AllowPrivateAccess = "true"))
+	bool bDeletePrevMeshes = false;
 };

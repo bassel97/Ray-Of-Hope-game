@@ -2,10 +2,11 @@
 
 
 #include "ROH_BlobActor.h"
+#include "Kismet/KismetMathLibrary.h"
 #include "Components/SphereComponent.h"
 #include "Components/BoxComponent.h"
 #include "Components/StaticMeshComponent.h"
-#include "Kismet/KismetMathLibrary.h"
+#include "RayOfHope/Characters/ROH_BoyCharacter.h"
 
 AROH_BlobActor::AROH_BlobActor()
 {
@@ -50,7 +51,7 @@ void AROH_BlobActor::Tick(float DeltaTime)
 	const FVector scale = FMath::Lerp(GetActorScale(), TargetBlobScale, DeltaTime * LightReactionSpeed);
 	SetActorScale3D(scale);
 
-	ResetInteractionWithLight();
+	//ResetInteractionWithLight();
 }
 
 void AROH_BlobActor::SetBlobRaduis(float raduis)
@@ -86,20 +87,25 @@ void AROH_BlobActor::ReactToLight(float lightDistance)
 {
 	IROH_LightReactableInterface::ReactToLight(lightDistance);
 
+	ReactionToLightValue = FMath::Clamp(
+		UKismetMathLibrary::NormalizeToRange(lightDistance, MinMaxLightReactThresholds.X, MinMaxLightReactThresholds.Y),
+		0.0f, 1.0f);
 
 	const float lightRecievedValue = FMath::Clamp(
-		UKismetMathLibrary::InverseLerp(MinMaxLightReactThresholds.X, MinMaxLightReactThresholds.Y, TotalInteraction),
-		0.0f, 1.0f);
+		UKismetMathLibrary::NormalizeToRange(lightDistance, MinMaxLightReactThresholds.X, MinMaxLightReactThresholds.Y),
+		0.0f, 0.8f);
 
 	TargetBlobScale = FVector(1.0f - lightRecievedValue);
 
 	if (lightRecievedValue > BoxDynamicLightThreshold)
 	{
-		BoxDynamicCollider->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+		//BoxDynamicCollider->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+		BoxDynamicCollider->SetCollisionResponseToChannel(ECollisionChannel::ECC_GameTraceChannel3, ECollisionResponse::ECR_Ignore);
 	}
 	else
 	{
-		BoxDynamicCollider->SetCollisionEnabled(BoxColliderType);
+		//BoxDynamicCollider->SetCollisionEnabled(BoxColliderType);
+		BoxDynamicCollider->SetCollisionResponseToChannel(ECollisionChannel::ECC_GameTraceChannel3, ECollisionResponse::ECR_Overlap);
 	}
 }
 
@@ -111,9 +117,11 @@ void AROH_BlobActor::OnOverlapBegin(
 	bool bFromSweep,
 	const FHitResult& SweepResult)
 {
-	if (OtherActor)
+	if (AROH_BoyCharacter* boyCharacter = Cast<AROH_BoyCharacter>(OtherActor))
 	{
-		GEngine->AddOnScreenDebugMessage(-1, 10.0f, FColor::Magenta, OtherActor->GetName() + "Started");
+		//GEngine->AddOnScreenDebugMessage(-1, 10.0f, FColor::Red, OtherActor->GetName() + "Boy Entered Blob");
+		GEngine->AddOnScreenDebugMessage(-1, 10.0f, FColor::Red, OtherComp->GetName() + " Boy Entered Blob");
+		OnPlayerEnterblob(boyCharacter);
 	}
 }
 
@@ -123,9 +131,10 @@ void AROH_BlobActor::OnOverlapEnd(
 	class UPrimitiveComponent* OtherComp,
 	int32 OtherBodyIndex)
 {
-	if (OtherActor)
+	if (AROH_BoyCharacter* boyCharacter = Cast<AROH_BoyCharacter>(OtherActor))
 	{
-		GEngine->AddOnScreenDebugMessage(-1, 10.0f, FColor::Magenta, OtherActor->GetName() + "Ended");
+		//GEngine->AddOnScreenDebugMessage(-1, 10.0f, FColor::Red, OtherActor->GetName() + "Boy Exited Blob");
+		OnPlayerExitblob(boyCharacter);
 	}
 }
 
@@ -147,6 +156,7 @@ void AROH_BlobActor::BeginPlay()
 	
 	if (BoxDynamicCollider)
 	{
-		BoxColliderType = BoxDynamicCollider->GetCollisionEnabled();
+		//BoxColliderType = BoxDynamicCollider->GetCollisionEnabled();
+		//BoxDynamicCollider->SetCollisionResponseToChannel(ECollisionChannel::ECC_GameTraceChannel3, ECollisionResponse::ECR_Ignore);
 	}
 }
