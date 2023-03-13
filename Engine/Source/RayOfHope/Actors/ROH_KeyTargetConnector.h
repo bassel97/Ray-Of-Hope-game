@@ -37,7 +37,15 @@ private:
 	TObjectPtr<class UStaticMesh> SplineMesh;
 
 	UPROPERTY()
-	TArray<class USplineMeshComponent*> SplineMeshComponents;
+	TArray<TObjectPtr<class USplineMeshComponent>> SplineMeshComponents;
+
+	float TestTime = 0;
+
+	UPROPERTY(Category = KeyTargetConnector, EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<UMaterialInterface> SplineMaterial = nullptr;
+
+	TObjectPtr<UMaterialInstanceDynamic> SplineDynamicMaterial = nullptr;
+
 	UPROPERTY(Category = KeyTargetConnector, EditAnywhere, meta = (AllowPrivateAccess = "true"))
 	bool bDeletePrevMeshes = false;
 };
