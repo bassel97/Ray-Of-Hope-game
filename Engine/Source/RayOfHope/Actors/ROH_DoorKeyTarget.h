@@ -6,9 +6,6 @@
 #include "ROH_KeyTargetParent.h"
 #include "ROH_DoorKeyTarget.generated.h"
 
-/**
- * 
- */
 UCLASS()
 class RAYOFHOPE_API AROH_DoorKeyTarget : public AROH_KeyTargetParent
 {

@@ -37,7 +37,6 @@ void AROH_KeyInteractableActor::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 
 	const bool shouldOpenTarget = bShouldOpenByLight || bShouldOpenByCollision;
-	//GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Yellow, shouldOpenTarget?"shouldOpenTarget":"should not OpenTarget");
 	if (bShouldOpenByLightPrevious != shouldOpenTarget)
 	{
 		InteractWithTargets(shouldOpenTarget);
@@ -48,17 +47,11 @@ void AROH_KeyInteractableActor::Tick(float DeltaTime)
 void AROH_KeyInteractableActor::ResetInteractionWithLight()
 {
 	IROH_LightReactableInterface::ResetInteractionWithLight();
-
 }
 
 void AROH_KeyInteractableActor::ReactToLight(float lightDistance)
 {
 	IROH_LightReactableInterface::ReactToLight(lightDistance);
-
-	if (bCanInteractWithLight)
-	{
-		//GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Yellow, FString::SanitizeFloat(lightDistance));
-	}
 
 	bShouldOpenByLight = bCanInteractWithLight && lightDistance > LightInteractionThreshold;
 }
@@ -110,21 +103,16 @@ void AROH_KeyInteractableActor::SetUpKeyTargets()
 		{
 			if (keyTarget.Connector.IsNull())
 			{
-				//keyTarget.Connector.Get()->Destroy();
 				keyTarget.Connector = GetWorld()->SpawnActor<AROH_KeyTargetConnector>(
 					KeyTargetConnector,
 					GetActorLocation(), GetActorRotation());
 			}
-			//GEngine->AddOnScreenDebugMessage(-1, 10.0f, FColor::Magenta, KeyTargetLineOrigin->GetComponentLocation().ToString());
-			//GEngine->AddOnScreenDebugMessage(-1, 10.0f, FColor::Magenta, keyTarget.Target->GetKeyTargetLineOriginLocation().ToString());
 
 			keyTarget.Connector->SetStartEndPoints(
 				KeyTargetLineOrigin->GetComponentLocation(),
 				keyTarget.Target->GetKeyTargetLineOriginLocation()
 			);
-
 			keyTarget.Connector->AttachToActor(this, FAttachmentTransformRules::KeepWorldTransform);
-			//keyTarget.Connector = connector;
 		}
 	}
 }
@@ -143,8 +131,7 @@ void AROH_KeyInteractableActor::PostEditChangeProperty(FPropertyChangedEvent& e)
 
 void AROH_KeyInteractableActor::BeginPlay()
 {
-	Super::BeginPlay();
-	
+	Super::BeginPlay();	
 }
 
 void AROH_KeyInteractableActor::InteractWithTargets(bool isOpening)

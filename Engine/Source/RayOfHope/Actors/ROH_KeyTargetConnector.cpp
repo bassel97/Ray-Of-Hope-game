@@ -16,27 +16,11 @@ AROH_KeyTargetConnector::AROH_KeyTargetConnector()
 void AROH_KeyTargetConnector::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
-	TestTime += DeltaTime;
-	GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Yellow, FString::SanitizeFloat(DeltaTime)
-	);
-
-	SplineDynamicMaterial->SetScalarParameterValue("TimeParameter", TestTime);
 }
 
 void AROH_KeyTargetConnector::OnConstruction(const FTransform& Transform)
 {
 	Super::OnConstruction(Transform);
-
-	// Hack to delete splines in editing
-	/*if (bDeletePrevMeshes)
-	{
-		for (USplineMeshComponent* splineComp : SplineMeshComponents)
-		{
-			splineComp->DestroyComponent();
-		}
-		SplineMeshComponents.Empty();
-	}*/
 
 	SplineMeshComponents.Empty();
 
@@ -59,11 +43,6 @@ void AROH_KeyTargetConnector::OnConstruction(const FTransform& Transform)
 				SplineComponent->GetTangentAtSplinePoint(i, ESplineCoordinateSpace::Local),
 				SplineComponent->GetLocationAtSplinePoint(i + 1, ESplineCoordinateSpace::Local),
 				SplineComponent->GetTangentAtSplinePoint(i + 1, ESplineCoordinateSpace::Local), true);
-
-			/*if (SplineDynamicMaterial != nullptr)
-			{
-				splineMeshComp->SetMaterial(0, SplineDynamicMaterial.Get());
-			}*/
 		}
 	}
 }
@@ -72,13 +51,10 @@ void AROH_KeyTargetConnector::SetStartEndPoints(
 	FVector keyLocation,
 	FVector targetLocation)
 {
-	//if (bDeletePrevMeshes)
-	//{
-	//SplineComponent->SetSplinePoints({ keyLocation, targetLocation }, ESplineCoordinateSpace::World);
 	SplineComponent->SetLocationAtSplinePoint(0, keyLocation, ESplineCoordinateSpace::Local);
 	SplineComponent->SetLocationAtSplinePoint(
-		SplineComponent->GetNumberOfSplinePoints() - 1, targetLocation, ESplineCoordinateSpace::Local);
-	//}
+		SplineComponent->GetNumberOfSplinePoints() - 1, targetLocation,
+		ESplineCoordinateSpace::Local);
 }
 
 void AROH_KeyTargetConnector::BeginPlay()
@@ -90,6 +66,4 @@ void AROH_KeyTargetConnector::BeginPlay()
 	{
 		splineMeshCompoent->SetMaterial(0, SplineDynamicMaterial.Get());
 	}
-
-	//SplineDynamicMaterial->SetScalarParameterValue("MyParameter", myFloatValue);
 }

@@ -26,10 +26,9 @@ public:
 protected:
 	virtual void BeginPlay() override;
 
-protected:
+private:
 	UPROPERTY(Category = BlobRegion, EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
 	FVector BlobBoxSize = FVector(1.0f);
-
 
 	UPROPERTY(Category = BlobRegion, EditAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	uint8 XAxisnumber = 1;

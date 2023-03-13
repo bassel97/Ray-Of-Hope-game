@@ -27,5 +27,4 @@ void AROH_KeyTargetParent::Tick(float DeltaTime)
 void AROH_KeyTargetParent::BeginPlay()
 {
 	Super::BeginPlay();
-
 }

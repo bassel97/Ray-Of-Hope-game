@@ -7,13 +7,11 @@
 AROH_MovablePawn::AROH_MovablePawn()
 {
 	PrimaryActorTick.bCanEverTick = true;
-
 }
 
 void AROH_MovablePawn::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
 }
 
 bool AROH_MovablePawn::CanMoveRight() const
@@ -28,8 +26,7 @@ bool AROH_MovablePawn::CanMoveLeft() const
 
 void AROH_MovablePawn::BeginPlay()
 {
-	Super::BeginPlay();
-	
+	Super::BeginPlay();	
 }
 
 bool AROH_MovablePawn::CheckSensor(float sign) const

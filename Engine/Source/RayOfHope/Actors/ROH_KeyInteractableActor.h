@@ -48,7 +48,6 @@ protected:
 	virtual void InteractWithTargets(bool isOpening);
 
 protected:
-
 	UPROPERTY(Category = KeyInteractable, EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
 	bool bIsOneTimePress = false;
 
@@ -68,7 +67,6 @@ private:
 
 	UPROPERTY(Category = Key, EditAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	bool bCanInteractWithDynamicObjects = false;
-
 
 	UPROPERTY(Category = Key, VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<class UStaticMeshComponent> KeyStaticMesh;

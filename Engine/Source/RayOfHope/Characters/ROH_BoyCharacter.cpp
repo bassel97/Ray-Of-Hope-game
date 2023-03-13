@@ -474,8 +474,6 @@ void AROH_BoyCharacter::UpdateSensor(float sign)
 
 void AROH_BoyCharacter::OnAnimationMontageEnd()
 {
-	GEngine->AddOnScreenDebugMessage(-1, 12.0f, FColor::Yellow, "Animation Montage Ended");
-
 	bIsJumpingRight = bIsJumpingLeft = false;
 	if (UCharacterMovementComponent* const movementComponent = GetCharacterMovement())
 	{

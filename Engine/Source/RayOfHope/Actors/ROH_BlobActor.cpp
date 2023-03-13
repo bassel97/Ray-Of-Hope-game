@@ -37,11 +37,10 @@ AROH_BlobActor::AROH_BlobActor()
 	if (BoxDynamicCollider)
 	{
 		BoxDynamicCollider->SetBoxExtent(FVector(BlobRaduis));
-		BoxDynamicCollider->OnComponentBeginOverlap.AddDynamic(this, &AROH_BlobActor::OnOverlapBegin);       // set up a notification for when this component overlaps something
-		BoxDynamicCollider->OnComponentEndOverlap.AddDynamic(this, &AROH_BlobActor::OnOverlapEnd);       // set up a notification for when this component overlaps something
+		BoxDynamicCollider->OnComponentBeginOverlap.AddDynamic(this, &AROH_BlobActor::OnOverlapBegin);
+		BoxDynamicCollider->OnComponentEndOverlap.AddDynamic(this, &AROH_BlobActor::OnOverlapEnd);       
 		BoxDynamicCollider->SetupAttachment(SphereComponent);
 	}
-
 }
 
 void AROH_BlobActor::Tick(float DeltaTime)
@@ -50,8 +49,6 @@ void AROH_BlobActor::Tick(float DeltaTime)
 
 	const FVector scale = FMath::Lerp(GetActorScale(), TargetBlobScale, DeltaTime * LightReactionSpeed);
 	SetActorScale3D(scale);
-
-	//ResetInteractionWithLight();
 }
 
 void AROH_BlobActor::SetBlobRaduis(float raduis)
@@ -87,10 +84,6 @@ void AROH_BlobActor::ReactToLight(float lightDistance)
 {
 	IROH_LightReactableInterface::ReactToLight(lightDistance);
 
-	ReactionToLightValue = FMath::Clamp(
-		UKismetMathLibrary::NormalizeToRange(lightDistance, MinMaxLightReactThresholds.X, MinMaxLightReactThresholds.Y),
-		0.0f, 1.0f);
-
 	const float lightRecievedValue = FMath::Clamp(
 		UKismetMathLibrary::NormalizeToRange(lightDistance, MinMaxLightReactThresholds.X, MinMaxLightReactThresholds.Y),
 		0.0f, 0.8f);
@@ -99,12 +92,10 @@ void AROH_BlobActor::ReactToLight(float lightDistance)
 
 	if (lightRecievedValue > BoxDynamicLightThreshold)
 	{
-		//BoxDynamicCollider->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 		BoxDynamicCollider->SetCollisionResponseToChannel(ECollisionChannel::ECC_GameTraceChannel3, ECollisionResponse::ECR_Ignore);
 	}
 	else
 	{
-		//BoxDynamicCollider->SetCollisionEnabled(BoxColliderType);
 		BoxDynamicCollider->SetCollisionResponseToChannel(ECollisionChannel::ECC_GameTraceChannel3, ECollisionResponse::ECR_Overlap);
 	}
 }
@@ -119,8 +110,6 @@ void AROH_BlobActor::OnOverlapBegin(
 {
 	if (AROH_BoyCharacter* boyCharacter = Cast<AROH_BoyCharacter>(OtherActor))
 	{
-		//GEngine->AddOnScreenDebugMessage(-1, 10.0f, FColor::Red, OtherActor->GetName() + "Boy Entered Blob");
-		GEngine->AddOnScreenDebugMessage(-1, 10.0f, FColor::Red, OtherComp->GetName() + " Boy Entered Blob");
 		OnPlayerEnterblob(boyCharacter);
 	}
 }
@@ -133,7 +122,6 @@ void AROH_BlobActor::OnOverlapEnd(
 {
 	if (AROH_BoyCharacter* boyCharacter = Cast<AROH_BoyCharacter>(OtherActor))
 	{
-		//GEngine->AddOnScreenDebugMessage(-1, 10.0f, FColor::Red, OtherActor->GetName() + "Boy Exited Blob");
 		OnPlayerExitblob(boyCharacter);
 	}
 }
@@ -153,10 +141,4 @@ void AROH_BlobActor::PostEditChangeProperty(FPropertyChangedEvent& e)
 void AROH_BlobActor::BeginPlay()
 {
 	AActor::BeginPlay();
-	
-	if (BoxDynamicCollider)
-	{
-		//BoxColliderType = BoxDynamicCollider->GetCollisionEnabled();
-		//BoxDynamicCollider->SetCollisionResponseToChannel(ECollisionChannel::ECC_GameTraceChannel3, ECollisionResponse::ECR_Ignore);
-	}
 }

@@ -53,10 +53,8 @@ public:
 protected:
 	virtual void BeginPlay() override;
 
+protected:
 	FVector TargetBlobScale = FVector(1.0f);
-
-	UPROPERTY(Category = Blob, VisibleAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
-	float ReactionToLightValue = 0.0f;
 
 private:
 	UPROPERTY(Category = Blob, EditAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
@@ -72,13 +70,11 @@ private:
 	UPROPERTY(Category = LightReactable, EditAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	FVector2D MinMaxLightReactThresholds = FVector2D(0.0f, 1000.0f);
 
-
 	UPROPERTY(Category = Blob, VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<class USphereComponent> SphereComponent;
 
 	UPROPERTY(Category = Blob, VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<class UBoxComponent> BoxDynamicCollider;
-	//ECollisionEnabled::Type BoxColliderType = ECollisionEnabled::NoCollision;
 
 	UPROPERTY(Category = Blob, VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<class UStaticMeshComponent> StaticMeshComponent;

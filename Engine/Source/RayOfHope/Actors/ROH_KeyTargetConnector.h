@@ -39,8 +39,6 @@ private:
 	UPROPERTY()
 	TArray<TObjectPtr<class USplineMeshComponent>> SplineMeshComponents;
 
-	float TestTime = 0;
-
 	UPROPERTY(Category = KeyTargetConnector, EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<UMaterialInterface> SplineMaterial = nullptr;
 
